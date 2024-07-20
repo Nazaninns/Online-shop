@@ -10,9 +10,9 @@ class Product extends Model
 {
     use HasFactory;
 
-    public function shop(): BelongsTo
+    public function seller(): BelongsTo
     {
-        return $this->belongsTo(Shop::class);
+        return $this->belongsTo(Seller::class);
     }
 
     public function category(): BelongsTo
