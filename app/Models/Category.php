@@ -18,6 +18,11 @@ class Category extends Model
 
     public function parent():BelongsTo
     {
-        return $this->belongsTo(CategoryParent::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function children():HasMany
+    {
+        return $this->hasMany(Category::class);
     }
 }
