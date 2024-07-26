@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('price')->nullable();
+            $table->decimal('price')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('seller_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->nullable()->constrained()->cascadeOnDelete();
