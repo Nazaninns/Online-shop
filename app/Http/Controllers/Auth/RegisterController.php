@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use InvalidArgumentException;
 
 class RegisterController extends Controller
 {
@@ -69,12 +70,8 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @return \App\Models\User
-     */
-    protected function create(array $data)
+
+    protected function create(array $data):mixed
     {
         $validatedData = [
             'firstname' => $data['first_name'],
@@ -88,6 +85,7 @@ class RegisterController extends Controller
             'admin' => Admin::query()->create($validatedData),
             'seller' => Seller::query()->create($validatedData),
             'customer' => Customer::query()->create($validatedData),
+            default => throw new InvalidArgumentException("Invalid user type: {$data['type']}"),
         };
     }
 
