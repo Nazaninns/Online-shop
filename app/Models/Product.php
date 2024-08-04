@@ -22,12 +22,12 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function orderItems():HasMany
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function featureOptions():BelongsToMany
+    public function featureOptions(): BelongsToMany
     {
         return $this->belongsToMany(FeatureOption::class);
     }

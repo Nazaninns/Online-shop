@@ -10,7 +10,7 @@ class Feature extends Model
 {
     use HasFactory;
 
-    public function featureOptions():HasMany
+    public function featureOptions(): HasMany
     {
         return $this->hasMany(FeatureOption::class);
     }
