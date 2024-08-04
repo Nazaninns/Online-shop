@@ -11,12 +11,12 @@ class FeatureOption extends Model
 {
     use HasFactory;
 
-    public function feature():BelongsTo
+    public function feature(): BelongsTo
     {
         return $this->belongsTo(Feature::class);
     }
 
-    public function products():BelongsToMany
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
     }
