@@ -32,7 +32,7 @@
     <div class="text-center text-white p-8 bg-opacity-80 bg-blue-700 rounded-lg shadow-lg">
         <h1 class="text-4xl font-bold mb-4">Welcome to Our Online Shop</h1>
         <p class="text-xl mb-6">Discover amazing products at unbeatable prices!</p>
-        <a href="/shop" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Start Shopping</a>
+        <a href="/home" class="inline-block bg-indigo-500 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded">Start Shopping</a>
     </div>
 </div>
 </body>

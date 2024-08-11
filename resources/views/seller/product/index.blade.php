@@ -31,10 +31,13 @@
 <div class="flex-1 p-6">
     <header class="flex items-center justify-between">
         <h1 class="text-3xl font-bold">Products</h1>
-        <div>
+        <div class="flex items-center space-x-4">
             <a href="/" class="text-blue-700 hover:underline">Home</a>
-            <span class="mx-2">|</span>
-            <a href="{{ route('logout') }}" class="text-blue-700 hover:underline">Logout</a>
+            <span class="">|</span>
+            <form action="{{ route('logout') }}" method="post" class="flex items-center">
+                @csrf
+                <button type="submit" class="text-blue-700 hover:underline">Logout</button>
+            </form>
         </div>
     </header>
 
@@ -47,30 +50,28 @@
             <table class="min-w-full bg-white">
                 <thead>
                 <tr>
-                    <th class="py-2 px-4 border-b">Product ID</th>
-                    <th class="py-2 px-4 border-b">Name</th>
-                    <th class="py-2 px-4 border-b">Price</th>
-                    <th class="py-2 px-4 border-b">Stock</th>
-                    <th class="py-2 px-4 border-b">Actions</th>
+                    <th class="py-2 px-4 border-b text-left">Product ID</th>
+                    <th class="py-2 px-4 border-b text-left">Name</th>
+                    <th class="py-2 px-4 border-b text-left">Price</th>
+                    <th class="py-2 px-4 border-b text-left">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-{{--                @foreach($products as $product)--}}
-{{--                    <tr>--}}
-{{--                        <td class="py-2 px-4 border-b">{{ $product->id }}</td>--}}
-{{--                        <td class="py-2 px-4 border-b">{{ $product->name }}</td>--}}
-{{--                        <td class="py-2 px-4 border-b">${{ $product->price }}</td>--}}
-{{--                        <td class="py-2 px-4 border-b">{{ $product->stock }}</td>--}}
-{{--                        <td class="py-2 px-4 border-b">--}}
-{{--                            <a href="{{ route('products.edit', $product->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>--}}
-{{--                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">--}}
-{{--                                @csrf--}}
-{{--                                @method('DELETE')--}}
-{{--                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>--}}
-{{--                            </form>--}}
-{{--                        </td>--}}
-{{--                    </tr>--}}
-{{--                @endforeach--}}
+                @foreach($products as $product)
+                    <tr>
+                        <td class="py-2 px-4 border-b">{{ $product->id }}</td>
+                        <td class="py-2 px-4 border-b">{{ $product->name }}</td>
+                        <td class="py-2 px-4 border-b">${{ $product->price }}</td>
+                        <td class="py-2 px-4 border-b flex space-x-2">
+                            <a href="{{ route('products.edit', $product->id) }}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>

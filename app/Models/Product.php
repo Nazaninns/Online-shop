@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
+
     use HasFactory;
+
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
     public function seller(): BelongsTo
     {

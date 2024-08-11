@@ -39,8 +39,8 @@ class LoginController extends Controller
     public function validateLogin(Request $request)
     {
         $request->validate([
-            'email' => ['required','string', 'email'],
-            'password' => ['required','string'],
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
         ]);
     }
 
@@ -60,11 +60,12 @@ class LoginController extends Controller
         $this->validateLogin($request);
         $guard = $this->guard();
         if ($guard->attempt($request->only('email', 'password'))) {
-            return view($guard->name.'.dashboard');
+            return view($guard->name . '.dashboard');
         }
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
     }
-
 }
+
+

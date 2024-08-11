@@ -3,28 +3,31 @@
 namespace App\Http\Controllers\Seller\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Seller\Product\StoreRequest;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return view('seller.product.index');
+        $products = Product::all();
+        return view('seller.product.index', compact('products'));
     }
     public function create()
     {
-        return view('seller.product.create');
+        $categories = Category::all();
+        return view('seller.product.create', compact('categories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-
-        Product::create($request->all());
+        $data = $request->validated();
+        $seller = Auth::guard('seller')->user();
+        $seller->products()->create($data);
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
