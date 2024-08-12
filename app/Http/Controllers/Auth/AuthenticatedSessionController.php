@@ -4,35 +4,64 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Admin;
+use App\Models\Customer;
+use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): Response
+    public function validateLogin(Request $request): array
     {
-        $request->authenticate();
+        return $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+    }
 
-        $request->session()->regenerate();
+    public function guard(): string
+    {
+        if (Admin::where('email', request()->email)->exists()) {
+            return 'admin';
+        } elseif (Seller::where('email', request()->email)->exists()) {
+            return 'seller';
+        } else {
+            return 'customer';
+        }
+    }
 
-        return response()->noContent();
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $this->validateLogin($request);
+        $guardName = $this->guard();
+        $guard = Auth::guard($guardName);
+        $model = match ($guardName) {
+            'seller' => Seller::class,
+            'admin' => Admin::class,
+            'customer' => Customer::class
+        };
+        $user = $model::query()->where('email', request()->email)->first();
+        if ($user && Hash::check($data['password'], $user->password)) {
+            $token = $user->createToken($guardName . '-token', [$guardName])->plainTextToken;
+            return response()->json(['token' => $token, $guardName => $user]);
+        }
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): Response
+    public function destroy(Request $request): \Illuminate\Http\JsonResponse
     {
-        Auth::guard('web')->logout();
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return response()->noContent();
     }
 }

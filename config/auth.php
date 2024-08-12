@@ -47,17 +47,17 @@ return [
         ],
 
         'seller' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'sellers',
         ],
 
         'customer' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'customers',
         ],
 
         'admin' => [
-            'driver' => 'session',
+            'driver' => 'sanctum',
             'provider' => 'admins',
         ],
     ],
@@ -82,7 +82,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => App\Models\User::class,
         ],
 
         'sellers' => [
