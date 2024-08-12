@@ -16,7 +16,7 @@
     <nav class="mt-6">
         <ul>
             <li class="px-4 py-2 hover:bg-blue-600"><a href="#">Dashboard</a></li>
-            <li class="px-4 py-2 hover:bg-blue-600"><a href="#">My Products</a></li>
+            <li class="px-4 py-2 hover:bg-blue-600"><a href="{{route('products.index')}}">My Products</a></li>
             <li class="px-4 py-2 hover:bg-blue-600"><a href="#">Sales</a></li>
             <li class="px-4 py-2 hover:bg-blue-600"><a href="#">Orders</a></li>
             <li class="px-4 py-2 hover:bg-blue-600"><a href="#">Customers</a></li>

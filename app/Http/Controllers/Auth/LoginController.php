@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Seller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -20,12 +24,6 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -37,4 +35,36 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    public function validateLogin(Request $request)
+    {
+        $request->validate([
+            'email' => ['required','string', 'email'],
+            'password' => ['required','string'],
+        ]);
+    }
+
+    public function guard()
+    {
+        if (Admin::where('email', request()->email)->exists()) {
+            return Auth::guard('admin');
+        } elseif (Seller::where('email', request()->email)->exists()) {
+            return Auth::guard('seller');
+        } else {
+            return Auth::guard('customer');
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+        $guard = $this->guard();
+        if ($guard->attempt($request->only('email', 'password'))) {
+            return view($guard->name.'.dashboard');
+        }
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
 }

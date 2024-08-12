@@ -33,7 +33,10 @@
         <div>
             <a href="/" class="text-blue-700 hover:underline">Home</a>
             <span class="mx-2">|</span>
-            <a href="{{ route('logout') }}" class="text-blue-700 hover:underline">Logout</a>
+            <form action="{{route('logout') }}" method="post">
+                @csrf
+            <button type="submit" class="text-blue-700 hover:underline">Logout</button>
+            </form>
         </div>
     </header>
 
