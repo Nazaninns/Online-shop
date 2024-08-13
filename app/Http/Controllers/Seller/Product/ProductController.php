@@ -4,56 +4,42 @@ namespace App\Http\Controllers\Seller\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Seller\Product\StoreRequest;
+use App\Http\Requests\Seller\Product\updateRequest;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         $products = Product::all();
-        return view('seller.product.index', compact('products'));
-    }
-    public function create()
-    {
-        $categories = Category::all();
-        return view('seller.product.create', compact('categories'));
+        return response()->json(['message' => 'ok', 'data' => $products]);
     }
 
-    public function store(StoreRequest $request)
+
+    public function store(StoreRequest $request): JsonResponse
     {
         $data = $request->validated();
         $seller = Auth::guard('seller')->user();
-        $seller->products()->create($data);
-        return redirect()->route('products.index')->with('success', 'Product created successfully.');
+        $product = $seller->products()->create($data);
+        return response()->json(['message' => 'ok', 'data' => $product], 201);
     }
 
-    public function edit($id)
+
+    public function update(updateRequest $request, Product $product): JsonResponse
     {
-        $product = Product::findOrFail($id);
-        return view('products.edit', compact('product'));
+        $data = $request->validated();
+        $product->update($data);
+        return response()->json(['message' => 'ok', 'data' => 'update successfully']);
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Product $product): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-
-        $product = Product::findOrFail($id);
-        $product->update($request->all());
-        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
-    }
-
-    public function destroy($id)
-    {
-        $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        return response()->json(['message' => 'ok', 'data' => 'delete successfully']);
     }
 }
