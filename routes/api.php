@@ -10,17 +10,20 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth:sanctum'])->group(function () {
 
     //seller
-    //product
-    Route::apiResource('products', ProductController::class);
-
+    Route::prefix('seller')->group(function () {
+        //product
+        Route::apiResource('products', ProductController::class);
+    });
 
     //customer
-
-    //cart
-    Route::prefix('cart')->controller(CartController::class)->group(function () {
-        Route::post('/add', 'addProductToCart');
-        Route::post('/remove', 'removeProductFromCart');
-        Route::post('/payment','pay');
+    Route::prefix('customer')->group(function () {
+        //cart
+        Route::prefix('cart')->controller(CartController::class)->group(function () {
+            Route::post('/add', 'addProductToCart');
+            Route::post('/remove', 'deleteProductFromCart');
+            Route::get('/show', 'showCart');
+            Route::post('/payment', 'pay');
+        });
     });
     //payment
 });
