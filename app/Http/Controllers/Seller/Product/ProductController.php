@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Seller\Product\StoreRequest;
 use App\Http\Requests\Seller\Product\updateRequest;
+use App\Http\Resources\Seller\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +18,7 @@ class ProductController extends Controller
     public function index(): JsonResponse
     {
         $products = Product::all();
-        return response()->json(['message' => 'ok', 'data' => $products]);
+        return response()->json(['message' => 'ok', 'data' => ProductResource::collection($products)]);
     }
 
 
@@ -26,7 +27,7 @@ class ProductController extends Controller
         $data = $request->validated();
         $seller = Auth::guard('seller')->user();
         $product = $seller->products()->create($data);
-        return response()->json(['message' => 'ok', 'data' => $product], 201);
+        return response()->json(['message' => 'ok', 'data' => ProductResource::make($product)], 201);
     }
 
 
