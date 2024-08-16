@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount');
             $table->string('payment_method')->nullable()->default('credit_card');
-            $table->enum('status', array_column(\App\PaymentStatusEnum::cases(), 'value'));
+            $table->enum('status', array_column(\App\Enum\PaymentStatusEnum::cases(), 'value'));
             $table->timestamps();
         });
     }
