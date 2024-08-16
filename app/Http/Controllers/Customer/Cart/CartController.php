@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Customer\Cart;
 
+use App\Enum\OrderStatusEnum;
+use App\Enum\PaymentStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Cart\AddProductToCartRequest;
 use App\Http\Requests\Customer\Cart\DeleteProductToCartRequest;
 use App\Http\Resources\Customer\Cart\CartResource;
-use App\Models\Order;
 use App\Models\Product;
-use App\PaymentStatusEnum;
 use App\Services\CartService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -60,7 +59,7 @@ class CartController extends Controller
 
             $order = $customer->orders()->create([
                 'total_price' => $totalAmount,
-                'status' => 1,
+                'status' => OrderStatusEnum::PENDING,
             ]);
 
             foreach ($cart as $productId => $quantity) {
