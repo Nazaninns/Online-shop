@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->morphs('payable');
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount');
             $table->string('payment_method')->nullable()->default('credit_card');

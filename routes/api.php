@@ -22,7 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/add', 'addProductToCart');
             Route::post('/remove', 'deleteProductFromCart');
             Route::get('/show', 'showCart');
-            Route::post('/payment', 'pay');
+            Route::post('/pay', 'pay');
         });
     });
     //payment
