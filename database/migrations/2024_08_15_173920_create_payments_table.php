@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount');
             $table->string('payment_method')->nullable()->default('credit_card');
             $table->enum('status', array_column(\App\Enum\PaymentStatusEnum::cases(), 'value'));

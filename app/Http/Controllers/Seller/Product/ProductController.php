@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Seller\Product;
 
+use App\Events\OrderStatusChangeEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Seller\Product\StoreRequest;
 use App\Http\Requests\Seller\Product\updateRequest;
