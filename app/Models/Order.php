@@ -27,8 +27,8 @@ protected $guarded = ['id', 'created_at', 'updated_at'];
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payment(): HasOne
+    public function payment(): BelongsTo
     {
-        return $this->hasOne(Payment::class);
+        return $this->belongsTo(Payment::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer\Cart;
 
 use App\Enum\OrderStatusEnum;
 use App\Enum\PaymentStatusEnum;
+use App\Events\OrderStatusChangeEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Cart\AddProductToCartRequest;
 use App\Http\Requests\Customer\Cart\DeleteProductToCartRequest;
@@ -57,34 +58,35 @@ class CartController extends Controller
 
             $totalAmount = 0;
 
+            foreach ($cart as $productId => $quantity) {
+                $product = Product::query()->find($productId);
+                $totalAmount += $product->price * $quantity;
+            }
+
+            $payment = $customer->payments()->create([
+                'amount' => $totalAmount,
+                'status' => PaymentStatusEnum::SUCCESSFUL
+            ]);
+
             $order = $customer->orders()->create([
                 'total_price' => $totalAmount,
                 'status' => OrderStatusEnum::PENDING,
             ]);
 
+            OrderStatusChangeEvent::dispatch($order);
+
             foreach ($cart as $productId => $quantity) {
                 $product = Product::query()->find($productId);
-                if ($product) {
-                    $orderItem = $order->orderItems()->create([
-                        'product_id' => $product->id,
-                        'quantity' => $quantity,
-                        'price' => $product->price,
-                    ]);
-
-                    $totalAmount += $product->price * $quantity;
-
-                } else {
-                    return response()->json(['message' => 'Product not found'], 404);
+                if (!$product) {
+                    return response()->json(['message' => 'Product not found'], 400);
                 }
+                $order->orderItems()->create([
+                    'product_id' => $productId,
+                    'quantity' => $quantity,
+                    'price' => $product->price * $quantity,
+                ]);
             }
 
-            $order->update(['total_price' => $totalAmount]);
-
-            $payment = $order->payment()->create([
-                'customer_id' => $customer->id,
-                'amount' => $order->total_price,
-                'status' => PaymentStatusEnum::SUCCESSFUL
-            ]);
 
             DB::commit();
 
