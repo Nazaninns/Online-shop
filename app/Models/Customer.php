@@ -30,7 +30,7 @@ class Customer extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
-    public function alarm(): HasMany
+    public function alarms(): HasMany
     {
         return $this->hasMany(Alarm::class);
     }

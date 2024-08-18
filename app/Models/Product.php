@@ -35,7 +35,7 @@ class Product extends Model
         return $this->belongsToMany(FeatureOption::class);
     }
 
-    public function alarm(): HasMany
+    public function alarms(): HasMany
     {
         return $this->hasMany(Alarm::class);
     }

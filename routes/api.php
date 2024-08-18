@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Alarm\AlarmController;
 use App\Http\Controllers\Customer\Cart\CartController;
 use App\Http\Controllers\Seller\Product\ProductController;
 use Illuminate\Http\Request;
@@ -23,6 +24,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/remove', 'deleteProductFromCart');
             Route::get('/show', 'showCart');
             Route::post('/pay', 'pay');
+        });
+
+        //alarm
+        Route::prefix('alarm')->controller(AlarmController::class)->group(function () {
+            Route::post('/', 'store');
+            Route::delete('/', 'destroy');
         });
     });
     //payment

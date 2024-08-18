@@ -10,12 +10,14 @@ class Alarm extends Model
 {
     use HasFactory;
 
-    public function customer():BelongsTo
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function product():BelongsTo
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
