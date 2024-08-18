@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Customer extends Authenticatable
 {
-    use HasFactory, HasApiTokens , Notifiable;
+    use HasFactory, HasApiTokens, Notifiable;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
@@ -27,5 +28,15 @@ class Customer extends Authenticatable
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function alarms(): HasMany
+    {
+        return $this->hasMany(Alarm::class);
+    }
+
+    public function productWithAlarm(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'alarms', 'customer_id', 'product_id');
     }
 }

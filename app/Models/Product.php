@@ -34,4 +34,14 @@ class Product extends Model
     {
         return $this->belongsToMany(FeatureOption::class);
     }
+
+    public function alarms(): HasMany
+    {
+        return $this->hasMany(Alarm::class);
+    }
+
+    public function customerWithAlarm():BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class,'alarms','product_id','customer_id');
+    }
 }
