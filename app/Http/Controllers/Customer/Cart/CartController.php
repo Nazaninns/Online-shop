@@ -22,6 +22,8 @@ class CartController extends Controller
     {
         $data = $request->validated();
         $cartService = new CartService(Auth::id());
+        $product = Product::find($data['productId']);
+        if (!$product->checkProductQuantity($data['quantity']))  return response()->json(['message' => 'not ok', 'data' => 'have nt enough quantity']);
         $cartService->addProduct($data['product_id'], $data['quantity']);
         $cart = $cartService->get();
         return response()->json(['message' => 'ok', 'data' => CartResource::make($cart)]);
@@ -68,6 +70,12 @@ class CartController extends Controller
                 'status' => PaymentStatusEnum::SUCCESSFUL
             ]);
 
+            if ($payment) {
+                foreach ($cart as $productId => $quantity) {
+                    $product = Product::query()->find($productId);
+                    $product->update(['quantity' => $product->quantity - $quantity]);
+                }
+            }
             $order = $customer->orders()->create([
                 'total_price' => $totalAmount,
                 'status' => OrderStatusEnum::PENDING,

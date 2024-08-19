@@ -44,4 +44,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Customer::class,'alarms','product_id','customer_id');
     }
+
+    public function checkProductQuantity($quantity): bool
+    {
+        if ($this->quantity > $quantity) return true;
+    }
 }
