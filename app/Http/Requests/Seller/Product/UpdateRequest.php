@@ -25,7 +25,7 @@ class updateRequest extends FormRequest
             'name' => ['nullable','string', 'max:255'],
             'description' => ['nullable','string', 'max:255'],
             'price' => ['nullable','numeric'],
-            'image' => ['nullable','string'],
+            'image' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
             'category_id' => ['nullable','exists:categories,id'],
         ];
     }
