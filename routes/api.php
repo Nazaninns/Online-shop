@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Alarm\AlarmController;
 use App\Http\Controllers\Customer\Cart\CartController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Seller\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/pay', 'pay');
         });
 
+        //profile
+//        Route::prefix('profile')->controller(ProfileController::class)->group(function () {
+//            Route::post('/upload_picture','');
+//        });
         //alarm
         Route::prefix('alarm')->controller(AlarmController::class)->group(function () {
             Route::post('/', 'store');
