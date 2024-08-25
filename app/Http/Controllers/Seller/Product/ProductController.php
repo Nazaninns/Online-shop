@@ -9,9 +9,11 @@ use App\Http\Requests\Seller\Product\updateRequest;
 use App\Http\Resources\Seller\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class ProductController extends Controller
@@ -27,6 +29,11 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $seller = Auth::guard('seller')->user();
+        if ($request->hasFile('image')) {
+            $file = new FileService($data['image']);
+            $file->upload('products');
+            $data['image'] = $file->getPath();
+        }
         $product = $seller->products()->create($data);
         return response()->json(['message' => 'ok', 'data' => ProductResource::make($product)], 201);
     }
@@ -35,6 +42,15 @@ class ProductController extends Controller
     public function update(updateRequest $request, Product $product): JsonResponse
     {
         $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            if ($product->image && Storage::exists(public_path($product->image))) {
+                Storage::delete(public_path( $product->image));
+            }
+            $file = new FileService($data['image']);
+            $file->upload('products');
+            $data['image'] = $file->getPath();
+        }
         $product->update($data);
         return response()->json(['message' => 'ok', 'data' => 'update successfully']);
     }
