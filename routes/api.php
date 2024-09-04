@@ -1,22 +1,23 @@
 <?php
 
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Alarm\AlarmController;
 use App\Http\Controllers\Customer\Cart\CartController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Seller\Product\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:seller'])->group(function () {
 
     //seller
     Route::prefix('seller')->group(function () {
         //product
         Route::apiResource('products', ProductController::class);
     });
-
+});
+Route::middleware('auth:customer')->group(function () {
     //customer
     Route::prefix('customer')->group(function () {
         //cart
@@ -38,4 +39,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
     //payment
+});
+
+Route::middleware('auth:admin')->group(function () {
+    Route::prefix('admin')->group(function () {
+        Route::apiResource('discounts', DiscountController::class);
+    });
 });

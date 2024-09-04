@@ -48,5 +48,11 @@ class Product extends Model
     public function checkProductQuantity($quantity): bool
     {
         if ($this->quantity > $quantity) return true;
+        return false;
+    }
+
+    public function discount(): BelongsTo
+    {
+        return $this->belongsTo(Discount::class);
     }
 }
