@@ -78,10 +78,10 @@ class CartController extends Controller
             }
             $order = $customer->orders()->create([
                 'total_price' => $totalAmount,
-                'status' => OrderStatusEnum::PENDING,
+                'status' => OrderStatusEnum::PAID,
             ]);
 
-            OrderStatusChangeEvent::dispatch($order);
+//            OrderStatusChangeEvent::dispatch($order);
 
             foreach ($cart as $productId => $quantity) {
                 $product = Product::query()->find($productId);

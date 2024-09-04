@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enum\OrderStatusEnum;
 use App\Events\OrderStatusChangeEvent;
 use App\Notifications\ChangeOrderStatusNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,8 +27,20 @@ class OrderStatusChangeListener
     public function handle(OrderStatusChangeEvent $event): void
     {
         $order = $event->order;
-        $customer = $order->customer;
-        $notification = new ChangeOrderStatusNotification($order);
-        Notification::send($customer, $notification);
+        $newState = match ($order->status) {
+            OrderStatusEnum::PAID => OrderStatusEnum::PREPARING,
+            OrderStatusEnum::PREPARING => OrderStatusEnum::SHIPPING,
+            OrderStatusEnum::SHIPPING => OrderStatusEnum::DELIVERED,
+            default => null,
+        };
+
+        if ($newState) {
+
+            $order->transitionTo($newState);
+
+            $customer = $order->customer;
+            $notification = new ChangeOrderStatusNotification($order);
+            Notification::send($customer, $notification);
+        }
     }
 }
