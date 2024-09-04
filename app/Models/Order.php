@@ -31,4 +31,25 @@ protected $guarded = ['id', 'created_at', 'updated_at'];
     {
         return $this->belongsTo(Payment::class);
     }
+
+    public function transitionTo(OrderStatusEnum $newState): bool
+    {
+        if ($this->canTransitionTo($newState)) {
+            $this->status = $newState;
+            $this->save();
+            return true;
+        }
+        return false;
+    }
+
+    public function canTransitionTo(OrderStatusEnum $newState): bool
+    {
+        return match ($this->status) {
+            OrderStatusEnum::PAID => in_array($newState, [OrderStatusEnum::PREPARING, OrderStatusEnum::SHIPPING]),
+            OrderStatusEnum::PREPARING => $newState === OrderStatusEnum::SHIPPING,
+            OrderStatusEnum::SHIPPING => $newState === OrderStatusEnum::DELIVERED,
+            OrderStatusEnum::DELIVERED => false,
+            default => false,
+        };
+    }
 }

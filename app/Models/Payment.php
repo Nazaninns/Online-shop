@@ -26,4 +26,22 @@ class Payment extends Model
     {
         return $this->hasOne(Order::class);
     }
+
+    public function transitionTo(PaymentStatusEnum $newState): bool
+    {
+        if ($this->canTransitionTo($newState)) {
+            $this->status = $newState;
+            $this->save();
+            return true;
+        }
+        return false;
+    }
+
+    public function canTransitionTo(PaymentStatusEnum $newState): bool
+    {
+        return match ($this->status) {
+            PaymentStatusEnum::PENDING => in_array($newState, [PaymentStatusEnum::SUCCESSFUL, PaymentStatusEnum::FAILED]),
+            PaymentStatusEnum::SUCCESSFUL, PaymentStatusEnum::FAILED => false,
+        };
+    }
 }

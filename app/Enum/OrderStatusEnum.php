@@ -4,7 +4,8 @@ namespace App\Enum;
 
 enum OrderStatusEnum: string
 {
-    case PENDING = 'pending';
-    case SHIPPED = 'shipped';
-    case CANCELLED = 'cancelled';
+    case PAID = 'paid';
+    case PREPARING = 'preparing';
+    case SHIPPING = 'shipping';
+    case DELIVERED = 'delivered';
 }
