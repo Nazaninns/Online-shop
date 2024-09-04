@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Seller\Product;
 
 use App\Events\OrderStatusChangeEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Seller\Product\AddDiscountRequest;
 use App\Http\Requests\Seller\Product\StoreRequest;
 use App\Http\Requests\Seller\Product\updateRequest;
 use App\Http\Resources\Seller\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Policies\Seller\Product\DiscountPolicy;
 use App\Services\FileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,7 +47,7 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             if ($product->image && Storage::exists(public_path($product->image))) {
-                Storage::delete(public_path( $product->image));
+                Storage::delete(public_path($product->image));
             }
             $file = new FileService($data['image']);
             $file->upload('products');
@@ -61,4 +63,13 @@ class ProductController extends Controller
         return response()->json(['message' => 'ok', 'data' => 'delete successfully']);
     }
 
+    public function addDiscount(AddDiscountRequest $request)
+    {
+        $seller = Auth::guard('seller')->user();
+        $data = $request->validated();
+        $product = Product::find($data['product_id']);
+        $seller->can('add', $product);
+        $product->update(['discount_id' => $data['discount_id']]);
+        return response()->json(['message' => 'ok', 'data' => 'discount added successfully']);
+    }
 }
